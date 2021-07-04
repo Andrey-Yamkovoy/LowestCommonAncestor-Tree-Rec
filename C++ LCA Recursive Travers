@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+     int traverse(TreeNode* node, std::stack<TreeNode*>& stack, TreeNode* toFind) {
+		if(node == nullptr){
+            return -1;
+        }
+			
+		stack.push(node);
+		if(toFind->val == (*node).val)
+			return 1;
+		
+		int res = traverse(node->left,stack, toFind);
+		if( res == 1) {
+			return 1;
+		}		
+		else if( res == 0) {
+			stack.pop();
+		}
+		res = traverse(node->right,stack, toFind);
+		if( res == 1) {
+			return 1;
+		}
+		else if (res == 0){
+			stack.pop();
+		}
+		return 0;
+	}
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        std::stack<TreeNode*> stack1;
+		int result = traverse(root,stack1,p);
+		std::stack<TreeNode*> stack2;
+		result = traverse(root,stack2,q);
+		if(stack1.size() > stack2.size()) {
+			while(stack1.size() > stack2.size()) {
+				stack1.pop();
+			}
+		}
+		else if(stack2.size() > stack1.size()) {
+			while(stack2.size() > stack1.size()) {
+				stack2.pop();
+			}			
+		}
+		while(stack2.top() != stack1.top()) {
+			stack2.pop();
+			stack1.pop();
+		}
+		
+        auto res = stack1.top();
+		stack1.pop();
+        return res;
+    }
+};

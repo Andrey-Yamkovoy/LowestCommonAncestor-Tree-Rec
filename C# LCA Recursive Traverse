@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+     public int traverse(TreeNode node,Stack<TreeNode> stack, TreeNode toFind) {
+		if(node == null)
+			return -1;
+		stack.Push(node);
+		if(toFind == node)
+			return 1;
+		
+		int res = traverse(node.left,stack, toFind);
+		if( res == 1) {
+			return 1;
+		}		
+		else if( res == 0) {
+			stack.Pop();
+		}
+		res = traverse(node.right,stack, toFind);
+		if( res == 1) {
+			return 1;
+		}
+		else if (res == 0){
+			stack.Pop();
+		}
+		return 0;
+	}
+    public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        Stack<TreeNode> stack1 = new Stack<TreeNode>();
+		int result = traverse(root,stack1,p);
+		Stack<TreeNode> stack2 = new Stack<TreeNode>();
+		result = traverse(root,stack2,q);
+		if(stack1.Count() > stack2.Count()) {
+			while(stack1.Count() > stack2.Count()) {
+				stack1.Pop();
+			}
+		}
+		else if(stack2.Count() > stack1.Count()) {
+			while(stack2.Count() > stack1.Count()) {
+				stack2.Pop();
+			}			
+		}
+		while(stack2.Peek() != stack1.Peek()) {
+			stack2.Pop();
+			stack1.Pop();
+		}
+		
+		return stack1.Pop();
+    }
+}
